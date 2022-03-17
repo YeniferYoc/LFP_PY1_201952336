@@ -11,7 +11,7 @@ formulario ~>> [
     <
         tipo: "grupo-radio",
         nombre: "sexo",
-        valores: ['Masculino', 'Femenino']
+        valores: ['ddd', 'Femenino']
     >,
     <
         tipo: "grupo-option",

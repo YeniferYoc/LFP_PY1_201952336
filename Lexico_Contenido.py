@@ -5,6 +5,7 @@ class Analizador_Lexico():
     lexema = ''
     #lista de tokens
     tokens= []
+    tokens_errorres= []
     #Estado en que me encuentro
     estado = 1
     #Fila en la que me encuentro
@@ -17,7 +18,7 @@ class Analizador_Lexico():
     #Esto es solo para manejar los tipos
     
 
-    def __init__(self,entrada):
+    def analisis(self,entrada):
         self.estado = 1
         self.lexema = ''
         self.tokens = []
@@ -239,6 +240,7 @@ class Analizador_Lexico():
         tipos = Token("lexema", -1, -1, -1)
         for x in self.tokens:
             if x.tipo == tipos.DESCONOCIDO:
+                self.tokens_errorres.append(x)
                 print("LEXEMA: "+x.getLexema()," ENCONTRADO EN: LINEA: ",x.getFila(), ', COLUMNA: ',x.getColumna(),'--> Error Lexico')
                 print("---------------------------------------------------------------------")
     

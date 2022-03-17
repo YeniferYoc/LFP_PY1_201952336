@@ -133,6 +133,7 @@ class Sintactico_form():
                                 arreglo_bton_evento = self.Buscar_atributo(i,arreglo_menorque[1], "EVENTO")
                                 valor = arreglo_valor_boton[1]
                                 evento = arreglo_bton_evento[1]
+                                evento = evento.upper()
                                 boton_nuevo = Elemento("boton", valor, None, None, None, evento)
                                 self.arreglo_elementos.append(boton_nuevo)
                             
