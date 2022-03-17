@@ -12,7 +12,7 @@ class Todo():
     def __init__(self):
         self.contenido = ""
         self.lexico_conte = Analizador_Lexico()
-        self.sintactico_cont = None
+        self.sintactico_cont = Sintactico_form()
         self.elementos = None
         self.ventana_principal = tkinter.Tk()
         self.ventana_principal.geometry("700x500")
@@ -29,12 +29,21 @@ class Todo():
         boton_cargar_analizar.place(x = 90, y = 300)
         boton_reportes.place(x = 390, y = 300)
 
-        boton_salir = tkinter.Button(self.ventana_principal, text = "Salir", font=("Comic Sans MS", 15,"bold"), background=  "red",fg="white")
+        boton_salir = tkinter.Button(self.ventana_principal, text = "Salir", font=("Comic Sans MS", 15,"bold"), background=  "red",fg="white", command=lambda: self.destruir_ventana(self.ventana_principal))
         boton_salir.place(x = 635, y = 0)
         self.ventana_principal.mainloop()
 
     def opcion_elegida(self,opcion):
         if(opcion == 1):
+            #SI SELECCIONAN OTRO ARCHIVO, SE LIMPIAN LOS CAMPOS
+            self.contenido = ""
+            self.lexico_conte.tokens = []
+            self.lexico_conte.tokens_errorres = []
+            self.sintactico_cont.arreglo_elementos = []
+            print(len(self.contenido))
+            print(len(self.lexico_conte.tokens))
+            print(len(self.lexico_conte.tokens_errorres))
+            print(len(self.sintactico_cont.arreglo_elementos))
             print("AQUI SE SELECCIONA EL ARCHIVO .FORM ")
             self.contenido = cargar()
             print(self.contenido)
@@ -51,20 +60,40 @@ class Todo():
             else:
                 print("si se puede seguir")
                 sintactico_form = self.lexico_conte.tokens
-                self.sintactico_cont = Sintactico_form(sintactico_form)
+                self.sintactico_cont.analizar(sintactico_form)
                 self.elementos = self.sintactico_cont.arreglo_elementos
                 for elemento in self.elementos:
                     elemento.dar_todo()
                     print("---------------------------------------------------------------")
                 if len(self.elementos)>0:
+                    self.ventana_dialog = tkinter.Toplevel(self.ventana_principal)
+                    self.ventana_dialog.geometry("300x150")
+                    self.ventana_dialog.configure(bg="light blue")
+                    etiqueta = tkinter.Label(self.ventana_dialog, text = "NOMBRE DEL ARCHIVO HTML", background="light blue",font=("Comic Sans MS", 10,"bold"))
+                    etiqueta.place(x = 40, y = 5)
+                    self.caja_texto = tkinter.Entry(self.ventana_dialog, font=("Comic Sans MS", 15,"bold"))
+                    self.caja_texto.place(x = 25, y = 40)
+                    boton1 = tkinter.Button(self.ventana_dialog, text= "Aceptar",width=10, height=3, command = self.extraer_texto)
+                    boton1.place(x = 120, y = 80)
                     
-                   self.generar_form(self.elementos, "REPORTE")
                 
         
         if(opcion == 3):
-            print("AQUI SE SELECCIONA EL ARCHIVO .FORM ")
-            contenido_data = cargar()
-            print(contenido_data)
+            print("AQUI SE ANALIZA")
+            ventana_analizar = tkinter.Toplevel(self.ventana_principal)
+            ventana_analizar.geometry("700x560")
+            ventana_analizar.configure(bg="light blue")
+            etiqueta = tkinter.Label(ventana_analizar, text = "ANALISIS DE CODIGO DE ENTRADA", background="light blue",font=("Comic Sans MS", 20,"bold"))
+            etiqueta.place(x = 75, y = 5)
+#ultimo cambio
+            text_area = tkinter.Text(ventana_analizar)
+            text_area.place(x = 50, y =65, width=600, height= 400)
+
+            boton_analizar = tkinter.Button(ventana_analizar, text = "Reportes", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: opcion_elegida(4))
+            boton_analizar.place(x = 260, y = 470)
+
+            boton_salir = tkinter.Button(ventana_analizar, text = "Salir", font=("Comic Sans MS", 15,"bold"), background=  "red",fg="white")
+            boton_salir.place(x = 635, y = 0)        
 
         if(opcion == 4):
             print("AQUI REPORTES")
@@ -86,8 +115,9 @@ class Todo():
 
 
 
-            boton_salir = tkinter.Button(ventana_reportes, text = "Salir", font=("Comic Sans MS", 15,"bold"), background=  "red",fg="white")
+            boton_salir = tkinter.Button(ventana_reportes, text = "Salir", font=("Comic Sans MS", 15,"bold"), background=  "red",fg="white", command=lambda: self.destruir_ventana(ventana_reportes))
             boton_salir.place(x = 435, y = 0)
+            ventana_reportes.mainloop()
   
     def generar_form(self, elementos, nombre):
         nombre = nombre+".html"
@@ -99,6 +129,13 @@ class Todo():
         file.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
         file.write("<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU\" crossorigin=\"anonymous\">")
         file.write(" <title>YENIFER YOC</title>")
+        file.write(" <script>function form_mio(valor) {")
+        file.write("if (valor == 1) { document.getElementById(\"formulario\").style.display = \"\"; }")
+        file.write("else { document.getElementById(\"formulario\").style.display = \"none\"; }")
+        file.write(" }")
+        file.write("</script>")
+        file.write("")
+
         file.write(" </head>")
         file.write("<body bgcolor=\"#0E0440\">")
         file.write("<div style=\"height: 100%;\">")
@@ -159,32 +196,82 @@ class Todo():
                 file.write("<p>"+elemento.nombre+"</p>&nbsp&nbsp&nbsp")
                 file.write("<br>")
                 file.write("<br>")
-                file.write("<"+elemento.nombre+">")
+                file.write("<form name = \""+elemento.nombre+"\">")
                 for valor in elemento.valores:
                     file.write("<input type = \"radio\" id= \""+valor+"\" name = \"Grupo\">"+valor)
                     file.write("<br>")
-                file.write("<"+elemento.nombre+">")
+                file.write("</form>")
 
             elif elemento.tipo == "grupo-option":#GRUPO OPTION
                 file.write("<p>"+elemento.nombre+"</p>&nbsp&nbsp&nbsp")
                 file.write("<br>")
                 file.write("<br>")
-                file.write("<select name=\"OS\">")
+                file.write("<select id=\""+elemento.nombre+"\">")
                 for valor in elemento.valores:
                     file.write("<option value=\""+valor+"\">"+valor+"</option> ")
                 file.write("</select>")
 
             elif elemento.tipo == "boton":#BOTON
                 if elemento.evento == "INFO":
-                    file.write("<button type=\"button\" class=\"btn btn-secondary\" onclick=\"calculadora()\" >"+elemento.valor+"</button>")
+                    file.write("<button type=\"button\" class=\"btn btn-secondary\" onclick=\"info()\" >"+elemento.valor+"</button>")
                 elif elemento.evento == "ENTRADA":
-                    file.write("<button type=\"button\" class=\"btn btn-secondary\" onclick=\"calculadora()\" >"+elemento.valor+"</button>")
+                    file.write("<button type=\"button\" class=\"btn btn-secondary\" onclick=\"entrada()\" >"+elemento.valor+"</button>")
   
             file.write("</div>")
+       
         file.write("</div>")
+        file.write("<div id = \"info\" class = \"card border\" style = \"display: none; width: 40vw;\">")
+        file.write("<div class=\"card-body\">")
+        file.write(" <h4 >"+self.contenido+"</h4>")
+        file.write(" </div>")
+
+        file.write(" <script >")
+        file.write("async function info(){")
+        file.write("document.getElementById(\"info\").style.display = \"\"; }")
+        file.write(" async function entrada(){")
+        file.write("let cadena = \"LOS DATOS INGRESADOS FUERON LOS SIGUIENTES: <br>\";")
+        
+        for elemento in elementos:
+            
+            if elemento.tipo == "texto":#TEXTO
+                file.write("cadena += document.getElementById(\""+elemento.valor+"\").value;")
+                file.write("cadena+=\"<br>\";")
+            
+            elif elemento.tipo == "grupo-radio":#GRUPO RADIO
+                file.write("var i ;")
+                file.write("for (i = 0; i < document."+elemento.nombre+".Grupo.length; i++){ ")
+                file.write("if (document."+elemento.nombre+".Grupo[i].checked) {")
+                file.write("cadena += document."+elemento.nombre+".Grupo[i].id;")
+                file.write(" }")
+                file.write("} ")
+                file.write("cadena+=\"<br>\";")
+
+                
+            elif elemento.tipo == "grupo-option":#GRUPO OPTION
+                file.write("var d = document.getElementById(\""+elemento.nombre+"\");")
+                file.write("var displaytext = d.options[d.selectedIndex].text;")
+                file.write("cadena += displaytext;")
+                file.write("cadena+=\"<br>\";")
+                file.write("")
+                file.write("")
+                file.write("")
+
+                
+        
+        file.write("document.body.innerHTML = \"<h2>\" +cadena+\"</h2>\";")
+
+            
+
+
+                
+        file.write("}")
+        file.write("</script>")
+        
+        
+        
         
 
-        file.write("<script src = \"./index_mio.js\"></script>")
+        #file.write("<script src = \"./index_mio.js\"></script>")
         file.write(" <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ\" crossorigin=\"anonymous\"></script>")
  
         
@@ -194,6 +281,15 @@ class Todo():
         print("")
         print("SE HA CREADO EL REPORTE CON EXITO")
         print("")
+
+    def extraer_texto(self):
+        entrada = self.caja_texto.get()
+        self.caja_texto.delete(0, tkinter.END)
+        self.generar_form(self.elementos, entrada)
+        self.ventana_dialog.destroy()
+    
+    def destruir_ventana(self, ventana):
+        ventana.destroy()
 
 '''
 def interfaz ():

@@ -26,10 +26,10 @@ class Analizador_Lexico():
         self.columna = 1
         self.error = True
         tipos = Token("lexema", -1, -1, -1)
-        print(entrada)
+        #print(entrada)
 
         entrada = entrada + '#'
-        print(entrada)
+        #print(entrada)
         actual = ''
         longitud = len(entrada)
 
@@ -38,7 +38,7 @@ class Analizador_Lexico():
             
             if self.estado == 1:
                 if actual.isalpha():
-                    print(actual)
+                    #print(actual)
                     self.estado = 4
                     self.columna += 1
                     self.lexema += actual
@@ -124,7 +124,7 @@ class Analizador_Lexico():
             #MANEJRAR LETRAS
             elif self.estado == 4:
                 #print("entro")
-                print(actual)
+                #print(actual)
                 if actual.isalpha():
                     self.estado = 4
                     self.columna += 1
@@ -144,7 +144,7 @@ class Analizador_Lexico():
                             self.AgregarToken(tipos.CURVA)
                             #continue
                         i =- 1
-                        print(i)
+                        #print(i)
                         continue
                     else:
                         self.lexema += actual

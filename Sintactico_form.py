@@ -34,7 +34,7 @@ class Sintactico_form():
 
 
 
-    def __init__(self,tokens):
+    def analizar(self,tokens):
 
         self.tokens= tokens
         longitud_arr = len(tokens)
