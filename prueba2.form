@@ -1,0 +1,36 @@
+formulario ~>> [
+    <
+        tipo: "etiqueta",
+        valor: "Nombre:"
+    >,
+    <
+        tipo: "texto",
+        valor: "Nombre",
+        fondo: "Ingrese nombre"
+    >,
+    <
+        tipo: "texto",
+        valor: "color",
+        fondo: "Ingrese color"
+    >,
+    <
+        tipo: "grupo-radio",
+        nombre: "sexo",
+        valores: ['ddd', 'Femenino']
+    >,
+    <
+        tipo: "grupo-option",
+        nombre: "pais",
+        valores: ['Guatemala', 'El Salvador', 'Honduras']
+    >,
+    <
+        tipo: "grupo-option",
+        nombre: "edad",
+        valores: ['11', '12', '13']
+    >,
+    <
+        tipo: "boton",
+        valor: "Valor",
+        evento: entrada
+    >
+]
