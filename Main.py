@@ -66,33 +66,33 @@ class Todo():
                     elemento.dar_todo()
                     print("---------------------------------------------------------------")
                 if len(self.elementos)>0:
-                    self.ventana_dialog = tkinter.Toplevel(self.ventana_principal)
-                    self.ventana_dialog.geometry("300x150")
-                    self.ventana_dialog.configure(bg="light blue")
-                    etiqueta = tkinter.Label(self.ventana_dialog, text = "NOMBRE DEL ARCHIVO HTML", background="light blue",font=("Comic Sans MS", 10,"bold"))
-                    etiqueta.place(x = 40, y = 5)
-                    self.caja_texto = tkinter.Entry(self.ventana_dialog, font=("Comic Sans MS", 15,"bold"))
-                    self.caja_texto.place(x = 25, y = 40)
-                    boton1 = tkinter.Button(self.ventana_dialog, text= "Aceptar",width=10, height=3, command = self.extraer_texto)
-                    boton1.place(x = 120, y = 80)
+                    self.generar()
                     
                 
         
         if(opcion == 3):
             print("AQUI SE ANALIZA")
-            ventana_analizar = tkinter.Toplevel(self.ventana_principal)
-            ventana_analizar.geometry("700x560")
-            ventana_analizar.configure(bg="light blue")
-            etiqueta = tkinter.Label(ventana_analizar, text = "ANALISIS DE CODIGO DE ENTRADA", background="light blue",font=("Comic Sans MS", 20,"bold"))
-            etiqueta.place(x = 75, y = 5)
-#ultimo cambio
-            text_area = tkinter.Text(ventana_analizar)
-            text_area.place(x = 50, y =65, width=600, height= 400)
+            self.lexico_conte.tokens = []
+            self.lexico_conte.tokens_errorres = []
+            self.sintactico_cont.arreglo_elementos = []
+            print(len(self.lexico_conte.tokens))
+            print(len(self.lexico_conte.tokens_errorres))
+            print(len(self.sintactico_cont.arreglo_elementos))
 
-            boton_analizar = tkinter.Button(ventana_analizar, text = "Reportes", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: opcion_elegida(4))
+            self.ventana_analizar = tkinter.Toplevel(self.ventana_principal)
+            self.ventana_analizar.geometry("700x560")
+            self.ventana_analizar.configure(bg="light blue")
+            etiqueta = tkinter.Label(self.ventana_analizar, text = "ANALISIS DE CODIGO DE ENTRADA", background="light blue",font=("Comic Sans MS", 20,"bold"))
+            etiqueta.place(x = 75, y = 5)
+
+            self.text_area = tkinter.Text(self.ventana_analizar)
+            self.text_area.place(x = 50, y =65, width=600, height= 400)
+            self.text_area.insert(tkinter.END,self.contenido )
+
+            boton_analizar = tkinter.Button(self.ventana_analizar, text = "ANALIZAR", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= self.recuperar_texto)
             boton_analizar.place(x = 260, y = 470)
 
-            boton_salir = tkinter.Button(ventana_analizar, text = "Salir", font=("Comic Sans MS", 15,"bold"), background=  "red",fg="white")
+            boton_salir = tkinter.Button(self.ventana_analizar, text = "Salir", font=("Comic Sans MS", 15,"bold"), background=  "red",fg="white",command= lambda: self.destruir_ventana(self.ventana_analizar))
             boton_salir.place(x = 635, y = 0)        
 
         if(opcion == 4):
@@ -104,14 +104,14 @@ class Todo():
             etiqueta.place(x = 175, y = 5)
 
 
-            #boton_tokens = tkinter.Button(ventana_reportes, text = "Reporte de Tokens", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: opcion_elegida(4))
-            #boton_errores = tkinter.Button(ventana_reportes, text = "Reporte Errores", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: opcion_elegida(4))
-            #boton_usuario = tkinter.Button(ventana_reportes, text = "Manual de Usuario", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: opcion_elegida(4))
-            #boton_tecnico = tkinter.Button(ventana_reportes, text = "Manual Tecnico", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: opcion_elegida(4))
-            #boton_tokens.place(x = 30, y = 60)
-            #boton_errores.place(x = 275, y = 60)
-            #boton_usuario.place(x = 30, y = 250)
-            #boton_tecnico.place(x = 275, y = 250)
+            boton_tokens = tkinter.Button(ventana_reportes, text = "Reporte de Tokens", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(1))
+            boton_errores = tkinter.Button(ventana_reportes, text = "Reporte Errores", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(2))
+            boton_usuario = tkinter.Button(ventana_reportes, text = "Manual de Usuario", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(3))
+            boton_tecnico = tkinter.Button(ventana_reportes, text = "Manual Tecnico", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(4))
+            boton_tokens.place(x = 30, y = 60)
+            boton_errores.place(x = 275, y = 60)
+            boton_usuario.place(x = 30, y = 250)
+            boton_tecnico.place(x = 275, y = 250)
 
 
 
@@ -287,10 +287,53 @@ class Todo():
         self.caja_texto.delete(0, tkinter.END)
         self.generar_form(self.elementos, entrada)
         self.ventana_dialog.destroy()
+
+    def recuperar_texto(self):
+        self.contenido = self.text_area.get("1.0","end")
+        self.text_area.delete("1.0","end")
+        self.ventana_analizar.destroy()
+
+        print(self.contenido)
+        self.lexico_conte.analisis(self.contenido)
+        self.lexico_conte.Imprimir()
+        self.lexico_conte.ImprimirErrores()
+        if len(self.lexico_conte.tokens_errorres)>0:
+            mb.showerror("ERROR", "Se encontro uno o mas errores en el archivo de entrada, para mas informacion consulte reportes de errores")
+        else:
+            print("si se puede seguir")
+            sintactico_form = self.lexico_conte.tokens
+            self.sintactico_cont.analizar(sintactico_form)
+            self.elementos = self.sintactico_cont.arreglo_elementos
+            for elemento in self.elementos:
+                elemento.dar_todo()
+                print("---------------------------------------------------------------")
+            if len(self.elementos)>0:
+                self.generar()
     
     def destruir_ventana(self, ventana):
         ventana.destroy()
+    
+    def generar(self):
+                    self.ventana_dialog = tkinter.Toplevel(self.ventana_principal)
+                    self.ventana_dialog.geometry("300x150")
+                    self.ventana_dialog.configure(bg="light blue")
+                    etiqueta = tkinter.Label(self.ventana_dialog, text = "NOMBRE DEL ARCHIVO HTML", background="light blue",font=("Comic Sans MS", 10,"bold"))
+                    etiqueta.place(x = 40, y = 5)
+                    self.caja_texto = tkinter.Entry(self.ventana_dialog, font=("Comic Sans MS", 15,"bold"))
+                    self.caja_texto.place(x = 25, y = 40)
+                    boton1 = tkinter.Button(self.ventana_dialog, text= "Aceptar",width=10, height=3, command = self.extraer_texto)
+                    boton1.place(x = 120, y = 80)
 
+    def opciones_reporte(self, opcion):
+        if(opcion == 1):
+            print("REPORTE DE TOKENS")
+        if(opcion == 2):
+            print("REPORTE DE ERRORES")
+        if(opcion == 3):
+            print("MANUAL DE USUARIO")
+        if(opcion == 4):
+            print("MANUAL TECNICO")
+        
 '''
 def interfaz ():
     ventana_principal = tkinter.Tk()
@@ -316,7 +359,7 @@ def interfaz ():
     '''
 #---------------------------------------------------------------------------------------------------------
 
-
+#ULTMO CAMBIO 17/3 1842
 #FUNCIONES
 
 def main(): #METODO PRINCIPAL QUE INVOCA AL MENU2 
