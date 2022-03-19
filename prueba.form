@@ -1,16 +1,20 @@
-formulario ~>> [
+formulario ~>>          ddd
+[
     <
         tipo: "etiqueta",
         valor: "Nombre:"
-    >,
+    >
+    ,
     <
         tipo: "texto",
         valor: "Nombre",
         fondo: "Ingrese nombre"
     >,
-    <
-        tipo: "grupo-radio",
-        nombre: "sexo",
+    <sss:[+]
+        tipo
+        : 
+        "grupo-radio",
+        nombre : "sexo",
         valores: ['ddd', 'Femenino']
     >,
     <

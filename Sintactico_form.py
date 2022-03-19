@@ -2,37 +2,13 @@ from Token import *
 from Elemento import *
 
 class Sintactico_form():
-    """
-   CADENA = 2
-    NUMERO = 3
-    LLAVE_ABRE = 4
-    LLAVE_CIERRA =5
-    CORCHETE_ABRE = 6
-    CORCHETE_CIERRE = 7
-    PUNTO_COMA = 8
-    COMA = 9
-    DOS_PUNTOS =10
-    DESCONOCIDO = 11
-    NOMBRE = 12
-    GRAFICA = 13
-    LETRAS = 14
-    PARENTESIS_ABRE = 15
-    PARENTESIS_CIERRA = 16
-    INTERROGACION_ABRE = 17
-    INTERROGACION_CIERRA = 18
-    MAYOR_QUE = 19
-    MENOR_QUE = 20
-    """
-
+#ultimo
     nombre_mes = ''
     año_gra = 0
     arreglo_elementos = []
-
     lista_tokens = []
     arreglo_lleno = []
     datos_generales = []
-
-
 
     def analizar(self,tokens):
 
@@ -75,15 +51,7 @@ class Sintactico_form():
                 print("---------------------------------------------------------------")
         else:
             print("ERROR SINTACTICO")
-        #self.arreglo_productos = self.Buscar_elemento(TypeToken.CORCHETE_ABRE.name)
         
-        #for producto in self.arreglo_productos:
-         #   print(producto.producto + " -> precio: " + str(producto.precio_u)+" ganancia: "+str(producto.ganancia))### aqui mi quede
-        
-
-        
-
-
     def Buscar_elemento(self, tipo):
         longitud_arr = len(self.tokens)
         print(longitud_arr)
@@ -139,6 +107,7 @@ class Sintactico_form():
                             
                             else:
                                 print("ERROR, NO PERTENECE A NINGUN TIPO")
+                                break
                         else:
                             print("NOS SE ENCONTRO TIPO")
                             break

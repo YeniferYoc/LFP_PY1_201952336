@@ -4,7 +4,6 @@ class Token():
     fila = 0
     columna = 0
 
-    #ENUM
     PALABRA_RESERVADA = 1
     CADENA = 2
     NUMERO = 3
@@ -25,8 +24,6 @@ class Token():
     INFO = 17
     LETRAS = 18
    
-
-    #Constructor de la clase
     def __init__(self,lexema,tipo,fila,columna):
         self.lexema_valido = lexema
         self.tipo = tipo
@@ -41,7 +38,7 @@ class Token():
     
     def getColumna(self):
         return self.columna
-
+#ultimo
     def getTipo(self):
         if self.tipo == self.PALABRA_RESERVADA:
             return 'PALABRA_RESERVADA'

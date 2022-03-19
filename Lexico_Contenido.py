@@ -1,22 +1,14 @@
 from Token import Token
 
 class Analizador_Lexico():
-    #Guarda lo que llevo actualmente
     lexema = ''
-    #lista de tokens
     tokens= []
+    tokens_bien = []
     tokens_errorres= []
-    #Estado en que me encuentro
     estado = 1
-    #Fila en la que me encuentro
     fila = 1
-    #Columna en que me cuentro
     columna = 1
-    #booleano para saber si tengo errores
     generar = False
-
-    #Esto es solo para manejar los tipos
-    
 
     def analisis(self,entrada):
         self.estado = 1
@@ -35,8 +27,11 @@ class Analizador_Lexico():
 
         for i in range(longitud):
             actual = entrada[i]
+            #print("["+actual+"]")
+            #print(str(self.estado)+"estasdo")
             
             if self.estado == 1:
+                #print("entro"+str(i))
                 if actual.isalpha():
                     #print(actual)
                     self.estado = 4
@@ -47,7 +42,6 @@ class Analizador_Lexico():
                     self.estado = 1
                     self.columna += 1
                     self.lexema += actual
-                    self.columna += 1
                     self.AgregarToken(tipos.DESCONOCIDO)
                     continue
                 elif actual == '"':
@@ -114,8 +108,9 @@ class Analizador_Lexico():
                     continue
                 else:
                     self.lexema += actual
-                    self.AgregarToken(tipos.DESCONOCIDO)
                     self.columna += 1
+                    self.AgregarToken(tipos.DESCONOCIDO)
+                    
                     self.error = False
                     print("ERROR")
                     continue
@@ -142,14 +137,89 @@ class Analizador_Lexico():
                             self.lexema += actual
                             self.columna += 1
                             self.AgregarToken(tipos.CURVA)
+                        
+                        if actual == '>':
+                            self.lexema += actual
+                            self.columna += 1
+                            self.AgregarToken(tipos.MAYOR_QUE)
+
+                        elif actual == ' ':
+                            self.columna +=1
+                            self.estado = 1
                             #continue
+                        elif actual == '\n':
+                            self.fila += 1
+                            self.estado = 1
+                            self.columna = 1
+                            
+                        elif actual =='\r':
+                            self.estado = 1
+                            
+                        elif actual == '\t':
+                            self.columna += 5
+                            self.estado = 1
+                            continue
+                            
                         i =- 1
                         #print(i)
                         continue
                     else:
-                        self.lexema += actual
-                        self.columna += 1
-                        self.AgregarToken(tipos.DESCONOCIDO)
+                        print(i)
+                        print("["+actual+"]")
+                        self.AgregarToken(tipos.DESCONOCIDO)  
+                        if actual == '\n':
+                            self.fila += 1
+                            self.estado = 1
+                            self.columna = 1
+                            continue
+                        elif actual == '~':
+                            self.columna +=1
+                            self.lexema += actual
+                            self.AgregarToken(tipos.CURVA)
+                            continue
+                        elif actual == '>':
+                            self.columna +=1
+                            self.lexema += actual
+                            self.AgregarToken(tipos.MAYOR_QUE)
+                            continue
+                        elif actual == '<':
+                            self.columna += 1
+                            self.lexema += actual
+                            self.AgregarToken(tipos.MENOR_QUE)
+                            continue
+                        elif actual == '[':
+                            self.columna += 1
+                            self.lexema += actual
+                            self.AgregarToken(tipos.CORCHETE_ABRE)
+                            continue
+                        elif actual == ']':
+                            self.columna += 1
+                            self.lexema += actual
+                            self.AgregarToken(tipos.CORCHETE_CIERRA)
+                            continue
+                        elif actual == ':':
+                            self.columna += 1
+                            self.lexema += actual
+                            self.AgregarToken(tipos.DOS_PUNTOS)
+                            continue
+                        elif actual == ',':
+                            self.columna +=1
+                            self.lexema += actual
+                            self.AgregarToken(tipos.COMA)
+                            continue
+                        elif actual == '#' and i ==longitud - 1:
+                            print('EL ANALIZADOR LEXICO HA TERMINADO')
+                            continue
+                        else:
+                            self.lexema += actual
+                            self.AgregarToken(tipos.DESCONOCIDO)
+                            self.columna += 1
+                            self.error = False
+                            print("ERROR")
+                            continue
+                        i -= 1
+                        print(i)
+                        continue
             
             #ESTADO PARA MANEJAR NUMEROS
             elif self.estado == 3:
@@ -178,6 +248,7 @@ class Analizador_Lexico():
                         self.lexema = actual
                         self.columna += 1
                         self.AgregarToken(tipos.DESCONOCIDO)
+                        i -= 1
                     continue 
                      
 
@@ -190,6 +261,12 @@ class Analizador_Lexico():
                 elif actual == '"':
                      
                     self.AgregarToken(tipos.CADENA)
+                    self.columna +=1
+                    if actual == '\n':
+                            self.fila += 1
+                            self.estado = 1
+                            self.columna = 1
+                            continue
                     continue
             
             elif self.estado == 6:
@@ -203,14 +280,17 @@ class Analizador_Lexico():
                     self.AgregarToken(tipos.CADENA)
                     continue
 
-    
     def AgregarToken(self,tipo):
-        self.tokens.append(Token(self.lexema, tipo, self.fila, self.columna))
+        nuevo_token = Token(self.lexema, tipo, self.fila, self.columna)
+        tipos = Token("lexema", -1, -1, -1)
+        if nuevo_token.tipo != tipos.DESCONOCIDO:
+            self.tokens_bien.append(nuevo_token)
+        else:
+            self.tokens_errorres.append(nuevo_token)
+        self.tokens.append(nuevo_token)
         self.lexema = ""
         self.estado = 1
-        #print("hola")
-
-
+        
     def RESERVADA(self):
         entrada = self.lexema.upper() #convertir todo a minuscula
         si_es = False
@@ -234,13 +314,13 @@ class Analizador_Lexico():
                 print("LEXEMA: "+token.getLexema()," TIPO: ",token.getTipo(),' LINEA: ',token.getFila(), ', COLUMNA: ',token.getColumna())
                 print("---------------------------------------------------------------------")
     
-
     def ImprimirErrores(self):
         print("--------------------------------------------- LISTA DE ERRORES ---------------------------------------------")
         tipos = Token("lexema", -1, -1, -1)
         for x in self.tokens:
             if x.tipo == tipos.DESCONOCIDO:
-                self.tokens_errorres.append(x)
+                #self.tokens_errorres.append(x)
                 print("LEXEMA: "+x.getLexema()," ENCONTRADO EN: LINEA: ",x.getFila(), ', COLUMNA: ',x.getColumna(),'--> Error Lexico')
                 print("---------------------------------------------------------------------")
-    
+
+#ultimo

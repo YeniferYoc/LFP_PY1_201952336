@@ -5,6 +5,7 @@ from Lexico_Contenido import Analizador_Lexico
 from Sintactico_form import *
 from tkinter import Tk, messagebox as mb
 from tkinter.simpledialog import *
+from os import startfile
 #import ventana_analizar
 #from  ventana_reportes import *
 class Todo():
@@ -14,6 +15,7 @@ class Todo():
         self.lexico_conte = Analizador_Lexico()
         self.sintactico_cont = Sintactico_form()
         self.elementos = None
+        self.nombre_rep = ""
         self.ventana_principal = tkinter.Tk()
         self.ventana_principal.geometry("700x500")
         self.ventana_principal.configure(bg="cyan")
@@ -53,8 +55,8 @@ class Todo():
         #lexico_conte = Analizador_Lexico(contenido)
             print(self.contenido)
             self.lexico_conte.analisis(self.contenido)
-            self.lexico_conte.Imprimir()
-            self.lexico_conte.ImprimirErrores()
+            #self.lexico_conte.Imprimir()
+            #self.lexico_conte.ImprimirErrores()
             if len(self.lexico_conte.tokens_errorres)>0:
                 mb.showerror("ERROR", "Se encontro uno o mas errores en el archivo de entrada, para mas informacion consulte reportes de errores")
             else:
@@ -67,9 +69,7 @@ class Todo():
                     print("---------------------------------------------------------------")
                 if len(self.elementos)>0:
                     self.generar()
-                    
-                
-        
+                                      
         if(opcion == 3):
             print("AQUI SE ANALIZA")
             self.lexico_conte.tokens = []
@@ -97,17 +97,17 @@ class Todo():
 
         if(opcion == 4):
             print("AQUI REPORTES")
-            ventana_reportes = tkinter.Toplevel(self.ventana_principal)
-            ventana_reportes.geometry("500x400")
-            ventana_reportes.configure(bg="light blue")
-            etiqueta = tkinter.Label(ventana_reportes, text = "REPORTES", background="light blue",font=("Comic Sans MS", 20,"bold"))
+            self.ventana_reportes = tkinter.Toplevel(self.ventana_principal)
+            self.ventana_reportes.geometry("500x400")
+            self.ventana_reportes.configure(bg="light blue")
+            etiqueta = tkinter.Label(self.ventana_reportes, text = "REPORTES", background="light blue",font=("Comic Sans MS", 20,"bold"))
             etiqueta.place(x = 175, y = 5)
 
 
-            boton_tokens = tkinter.Button(ventana_reportes, text = "Reporte de Tokens", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(1))
-            boton_errores = tkinter.Button(ventana_reportes, text = "Reporte Errores", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(2))
-            boton_usuario = tkinter.Button(ventana_reportes, text = "Manual de Usuario", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(3))
-            boton_tecnico = tkinter.Button(ventana_reportes, text = "Manual Tecnico", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(4))
+            boton_tokens = tkinter.Button(self.ventana_reportes, text = "Reporte de Tokens", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(1))
+            boton_errores = tkinter.Button(self.ventana_reportes, text = "Reporte Errores", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(2))
+            boton_usuario = tkinter.Button(self.ventana_reportes, text = "Manual de Usuario", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(3))
+            boton_tecnico = tkinter.Button(self.ventana_reportes, text = "Manual Tecnico", font=("Comic Sans MS", 15,"bold"), width=15, height=2, background=  "gray",fg="white",command= lambda: self.opciones_reporte(4))
             boton_tokens.place(x = 30, y = 60)
             boton_errores.place(x = 275, y = 60)
             boton_usuario.place(x = 30, y = 250)
@@ -115,9 +115,9 @@ class Todo():
 
 
 
-            boton_salir = tkinter.Button(ventana_reportes, text = "Salir", font=("Comic Sans MS", 15,"bold"), background=  "red",fg="white", command=lambda: self.destruir_ventana(ventana_reportes))
+            boton_salir = tkinter.Button(self.ventana_reportes, text = "Salir", font=("Comic Sans MS", 15,"bold"), background=  "red",fg="white", command=lambda: self.destruir_ventana(self.ventana_reportes))
             boton_salir.place(x = 435, y = 0)
-            ventana_reportes.mainloop()
+            self.ventana_reportes.mainloop()
   
     def generar_form(self, elementos, nombre):
         nombre = nombre+".html"
@@ -278,6 +278,7 @@ class Todo():
 
         file.write("</BODY>\r\n"+ "</HTML>");			
         file.close()
+        startfile(nombre)
         print("")
         print("SE HA CREADO EL REPORTE CON EXITO")
         print("")
@@ -327,40 +328,89 @@ class Todo():
     def opciones_reporte(self, opcion):
         if(opcion == 1):
             print("REPORTE DE TOKENS")
+            self.ventana_dialog2 = tkinter.Toplevel(self.ventana_reportes)
+            self.ventana_dialog2.geometry("300x150")
+            self.ventana_dialog2.configure(bg="light blue")
+            etiqueta = tkinter.Label(self.ventana_dialog2, text = "NOMBRE DEL ARCHIVO HTML", background="light blue",font=("Comic Sans MS", 10,"bold"))
+            etiqueta.place(x = 40, y = 5)
+            self.caja_texto2 = tkinter.Entry(self.ventana_dialog2, font=("Comic Sans MS", 15,"bold"))
+            self.caja_texto2.place(x = 25, y = 40)
+            boton1 = tkinter.Button(self.ventana_dialog2, text= "Aceptar",width=10, height=3, command = self.extraer_nom_rep)
+            boton1.place(x = 120, y = 80) 
+            
+            
         if(opcion == 2):
             print("REPORTE DE ERRORES")
+            self.ventana_dialog23 = tkinter.Toplevel(self.ventana_reportes)
+            self.ventana_dialog23.geometry("300x150")
+            self.ventana_dialog23.configure(bg="light blue")
+            etiqueta = tkinter.Label(self.ventana_dialog23, text = "NOMBRE DEL ARCHIVO HTML", background="light blue",font=("Comic Sans MS", 10,"bold"))
+            etiqueta.place(x = 40, y = 5)
+            self.caja_texto23 = tkinter.Entry(self.ventana_dialog23, font=("Comic Sans MS", 15,"bold"))
+            self.caja_texto23.place(x = 25, y = 40)
+            boton1 = tkinter.Button(self.ventana_dialog23, text= "Aceptar",width=10, height=3, command = self.extraer_nom_rep_errores)
+            boton1.place(x = 120, y = 80) 
+            
         if(opcion == 3):
             print("MANUAL DE USUARIO")
+            startfile("[LFPA]_MANUAL_USUARIO_201952336.pdf")
+
         if(opcion == 4):
             print("MANUAL TECNICO")
+            startfile("[LFPA]_MANUAL_TECNICO_201952336.pdf")
+
+    def reporte_tokens(self, nombre, tokens, titulo):
+        nombre = nombre + ".html"
+        file = open(nombre, "w")
+        file.write("<HTML>")
+        file.write("<HEAD><TITLE>REPORTE TOKENS</TITLE>")
+        file.write("<link rel=\"stylesheet\"  href=\"estilos.css\">")
+        file.write("</head>")
+        file.write("<body>")
+        file.write("<CENTER><H1><b>------------------------------- REPORTE DE &nbsp &nbsp"+titulo+" -------------------------------</b></H1>")
+        file.write("</CENTER>")
+        file.write("<img src=\"2d.gif\" width=\"300\" height=\"200\" align=right>")
+        file.write("<form action=\"\"> ")
+        file.write("<p><b>&nbsp &nbsp &nbsp &nbsp &nbsp &nbspYENIFER ESTER YOC LARIOS &nbsp &nbsp -------->&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 201952336 </b></p>")
+        file.write("<br>")
+        file.write("<div  id = \"main-container\" >")
+        file.write("<b>")
+        file.write("<table>")
+        file.write("<thead>")
+        file.write("<tr>")
+        file.write("<th> TOKEN   </th><th>LEXEMA</th><th>FILA</th><th>COLUMNA</th>")
+        file.write("</tr>")
+        file.write("</thead>")
+                
+        for token in tokens:
+                    file.write("<tr><font size = 12 color = \"white\" >")
+                    file.write("<td> "+str(token.getTipo())+"</td><td>"+str(token.lexema_valido)+"</td><td>"+str(token.fila)+"</td><td>"+str(token.columna)+"</td>")
+                    file.write("<font size = 12></tr>")
+                
+        file.write("</b>")
+        file.write("</table>")
+        file.write("</div>")
+        file.write("</BODY>\r\n"+ "</HTML>");			
+        file.close()
+        startfile(nombre)
+        print("")
+        print("SE HA CREADO EL REPORTE CON EXITO")
+        print("")   
+           
+    def extraer_nom_rep (self):
+        nombre_rep = self.caja_texto2.get()
+        self.caja_texto2.delete(0, tkinter.END)
+        self.ventana_dialog2.destroy()
+        tokens_rep = self.lexico_conte.tokens_bien
+        self.reporte_tokens(nombre_rep, tokens_rep, "TOKENS")
+    
+    def extraer_nom_rep_errores (self):
+        nombre_rep_e = self.caja_texto23.get()
+        self.caja_texto23.delete(0, tkinter.END)
+        self.ventana_dialog23.destroy()
+        tokens_rep_e = self.lexico_conte.tokens_errorres
+        self.reporte_tokens(nombre_rep_e, tokens_rep_e, "ERRORES")
         
-'''
-def interfaz ():
-    ventana_principal = tkinter.Tk()
-    ventana_principal.geometry("700x500")
-    ventana_principal.configure(bg="cyan")
-    etiqueta = tkinter.Label(ventana_principal, text = "MENU PRINCIPAL", background="cyan",font=("Comic Sans MS", 25,"bold"))
-    etiqueta.place(x = 200, y = 5)
-    op=0
-    print(op)
-    boton_arch_form = tkinter.Button(ventana_principal, text = "Cargar archivo", font=("Comic Sans MS", 15,"bold"), width=17, height=5, background=  "gray",fg="white" , command= lambda: opcion_elegida(1) )
-    boton_generar_form = tkinter.Button(ventana_principal, text = "Generar Formulario", font=("Comic Sans MS", 15,"bold"), width=17, height=5, background=  "gray",fg="white",command= lambda: opcion_elegida(2))
-    boton_cargar_analizar = tkinter.Button(ventana_principal, text = "Cargar Analisis", font=("Comic Sans MS", 15,"bold"), width=17, height=5, background=  "gray",fg="white",command= lambda: opcion_elegida(3))
-    boton_reportes = tkinter.Button(ventana_principal, text = "Reportes", font=("Comic Sans MS", 15,"bold"), width=17, height=5, background=  "gray",fg="white",command= lambda: opcion_elegida(4))
-    boton_arch_form.place(x = 90, y = 60)
-    boton_generar_form.place(x = 390, y = 60)
-    boton_cargar_analizar.place(x = 90, y = 300)
-    boton_reportes.place(x = 390, y = 300)
-
-    boton_salir = tkinter.Button(ventana_principal, text = "Salir", font=("Comic Sans MS", 15,"bold"), background=  "red",fg="white")
-    boton_salir.place(x = 635, y = 0)
-    ventana_principal.mainloop()
-    print(str(op)+"ddd")
-    '''
-#---------------------------------------------------------------------------------------------------------
-
-#ULTMO CAMBIO 17/3 1842
-#FUNCIONES
 
 def main(): #METODO PRINCIPAL QUE INVOCA AL MENU2 
    app = Todo()
@@ -388,5 +438,4 @@ boton1.pack()
 #boton1 = tkinter.Button(ventana_nueva, text= "presiona", command = lambda:  saludo(" yenifer"))
 #boton1.pack()
 '''
-
-
+#ultimo
