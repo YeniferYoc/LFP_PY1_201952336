@@ -1,20 +1,16 @@
-formulario ~>>          ddd
-[
+formulario ~>> [
     <
         tipo: "etiqueta",
         valor: "Nombre:"
-    >
-    ,
+    >,
     <
         tipo: "texto",
         valor: "Nombre",
         fondo: "Ingrese nombre"
     >,
-    <sss:[+]
-        tipo
-        : 
-        "grupo-radio",
-        nombre : "sexo",
+    <
+        tipo: "grupo-radio",
+        nombre: "sexo",
         valores: ['ddd', 'Femenino']
     >,
     <
@@ -25,6 +21,6 @@ formulario ~>>          ddd
     <
         tipo: "boton",
         valor: "Valor",
-        evento: entrada
+        evento: info
     >
 ]
