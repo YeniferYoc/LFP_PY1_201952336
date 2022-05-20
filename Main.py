@@ -213,9 +213,9 @@ class Todo():
 
             elif elemento.tipo == "boton":#BOTON
                 if elemento.evento == "INFO":
-                    file.write("<button type=\"button\" class=\"btn btn-secondary\" onclick=\"info()\" >"+elemento.valor+"</button>")
-                elif elemento.evento == "ENTRADA":
                     file.write("<button type=\"button\" class=\"btn btn-secondary\" onclick=\"entrada()\" >"+elemento.valor+"</button>")
+                elif elemento.evento == "ENTRADA":
+                    file.write("<button type=\"button\" class=\"btn btn-secondary\" onclick=\"info()\" >"+elemento.valor+"</button>")
   
             file.write("</div>")
        
@@ -396,6 +396,7 @@ class Todo():
         print("")
         print("SE HA CREADO EL REPORTE CON EXITO")
         print("")   
+  
            
     def extraer_nom_rep (self):
         nombre_rep = self.caja_texto2.get()
